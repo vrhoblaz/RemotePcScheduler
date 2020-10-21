@@ -1,5 +1,6 @@
 export class CalendarItem {
   constructor(
+    public id: string,
     public date: Date,
     public topOffset: number,
     public height: number,
@@ -11,9 +12,10 @@ export class Entry {
   public calendarItems: CalendarItem[] = [];
 
   constructor(
+    public id: string,
     public startDateTime: Date,
     public endDateTime: Date,
-    public userName: string
+    public userName: string,
   ) {
     // populate Calander items
     const yearStart = startDateTime.getFullYear();
@@ -36,6 +38,7 @@ export class Entry {
       const topOffset = (minuteStart / 60 + hourStart) * 30;
       const height = (minuteEnd / 60 + hourEnd) * 30 - topOffset;
       const newCalendarItem = new CalendarItem(
+        id,
         startDateTime,
         topOffset,
         height,
@@ -47,6 +50,7 @@ export class Entry {
       let topOffset = (minuteStart / 60 + hourStart) * 30;
       let height = 24 * 30 - topOffset;
       let newCalendarItem = new CalendarItem(
+        id,
         startDateTime,
         topOffset,
         height,
@@ -58,6 +62,7 @@ export class Entry {
       topOffset = 0;
       height = (minuteEnd / 60 + hourEnd) * 30;
       newCalendarItem = new CalendarItem(
+        id,
         endDateTime,
         topOffset,
         height,
@@ -79,6 +84,7 @@ export class Entry {
         topOffset = 0;
         height = 24 * 30;
         newCalendarItem = new CalendarItem(
+          id,
           currDate,
           topOffset,
           height,

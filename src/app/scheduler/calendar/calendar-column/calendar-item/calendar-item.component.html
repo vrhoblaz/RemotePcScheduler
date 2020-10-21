@@ -1,5 +1,13 @@
 <!-- <div class="outter" [ngStyle]="{top: topOffset, height: height}">asd</div> -->
 <div
   class="outter"
-  [ngStyle]="{ 'top': calendarItem.topOffset + 'px', 'height': calendarItem.height + 'px' }"
-></div>
+  [ngClass]="{ 'outter-hovered': highlighted }"
+  [ngStyle]="{
+    top: calendarItem.topOffset + 'px',
+    height: calendarItem.height + 'px'
+  }"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
+>
+{{calendarItem.userName}}
+</div>

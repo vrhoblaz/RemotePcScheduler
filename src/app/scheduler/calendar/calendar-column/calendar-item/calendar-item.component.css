@@ -1,7 +1,9 @@
 .outter {
   position: absolute;
-  /* top: 600px;
-  height: 30px; */
-  background-color: rgba(122, 122, 122, 0.596);
+  background-color: rgba(120, 120, 120, 0.5);
   width: 13.54vw;
+  cursor: pointer;
+}
+.outter-hovered {
+  background-color: rgba(73, 167, 255, 0.50);
 }
