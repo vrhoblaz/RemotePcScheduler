@@ -1,0 +1,9 @@
+.hourBlock {
+  border: 1px solid rgba(150, 150, 150, 0.2);
+  color: rgba(150, 150, 150, 1);
+  height: 30px;
+  /* height: 4ch; */
+  /* display: inline-block; */
+  /* width: 4.16%; */
+  /* vertical-align: middle; */
+}

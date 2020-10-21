@@ -1,0 +1,12 @@
+.outter {
+  border: 1px solid black;
+  min-width: 13.54vw;
+  text-align: center;
+}
+.header {
+  font-weight: bold;
+}
+.calendar-content-container {
+  position: relative;
+  border-top: 2px solid black;
+}
