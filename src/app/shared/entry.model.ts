@@ -4,7 +4,8 @@ export class CalendarItem {
     public date: Date,
     public topOffset: number,
     public height: number,
-    public userName: string
+    public userName: string,
+    public requestType: string,
   ) {}
 }
 
@@ -12,10 +13,12 @@ export class Entry {
   public calendarItems: CalendarItem[] = [];
 
   constructor(
-    public id: string,
     public startDateTime: Date,
     public endDateTime: Date,
     public userName: string,
+    public requestType: string,
+    public description: string,
+    public id?: string,
   ) {
     // populate Calander items
     const yearStart = startDateTime.getFullYear();
@@ -42,7 +45,8 @@ export class Entry {
         startDateTime,
         topOffset,
         height,
-        userName
+        userName,
+        requestType
       );
       this.calendarItems.push(newCalendarItem);
     } else if (startDateTime < endDateTime) {
@@ -54,7 +58,8 @@ export class Entry {
         startDateTime,
         topOffset,
         height,
-        userName
+        userName,
+        requestType
       );
       this.calendarItems.push(newCalendarItem);
 
@@ -66,7 +71,8 @@ export class Entry {
         endDateTime,
         topOffset,
         height,
-        userName
+        userName,
+        requestType
       );
       this.calendarItems.push(newCalendarItem);
 
@@ -88,7 +94,8 @@ export class Entry {
           currDate,
           topOffset,
           height,
-          userName
+          userName,
+          requestType
         );
         this.calendarItems.push(newCalendarItem);
 

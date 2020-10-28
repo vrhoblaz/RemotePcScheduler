@@ -8,25 +8,49 @@ import { Entry, CalendarItem } from './entry.model';
 })
 export class DataService {
   hoveredCalendarItemId = new Subject<string>();
+  mondayDate = new Subject<Date>();
+  dataChanged = new Subject();
 
   data: Entry[] = [
     new Entry(
-      '1',
-      new Date(2020, 10, 21, 10, 30),
-      new Date(2020, 10, 21, 15, 0),
-      'Blaž'
+      new Date(2020, 9, 27, 15, 30),
+      new Date(2020, 9, 27, 16, 30),
+      'Blaž',
+      'active',
+      '',
+      '1'
     ),
     new Entry(
-      '2',
-      new Date(2020, 10, 21, 16, 30),
-      new Date(2020, 10, 22, 15, 0),
-      'You'
+      new Date(2020, 9, 27, 16, 30),
+      new Date(2020, 9, 28, 15, 0),
+      'Blaž',
+      'lowComputing',
+      '',
+      '2'
     ),
     new Entry(
-      '3',
-      new Date(2020, 10, 23, 16, 30),
-      new Date(2020, 10, 25, 15, 0),
-      'You'
+      new Date(2020, 9, 28, 16, 30),
+      new Date(2020, 9, 30, 15, 0),
+      'You',
+      'mediumComputing',
+      '',
+      '3'
+    ),
+    new Entry(
+      new Date(2020, 9, 31, 11, 30),
+      new Date(2020, 9, 32, 15, 0),
+      'You',
+      'highComputing',
+      '',
+      '4'
+    ),
+    new Entry(
+      new Date(2020, 10, 2, 11, 30),
+      new Date(2020, 10, 5, 15, 0),
+      'You',
+      'highComputing',
+      '',
+      '4'
     ),
   ];
 
@@ -46,5 +70,10 @@ export class DataService {
       );
     });
     return matchingItems;
+  }
+
+  addEntry(newEntry: Entry): void {
+    this.data.push(newEntry);
+    this.dataChanged.next();
   }
 }

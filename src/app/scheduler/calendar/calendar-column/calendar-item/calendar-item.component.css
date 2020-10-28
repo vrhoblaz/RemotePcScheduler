@@ -1,9 +1,22 @@
 .outter {
   position: absolute;
-  background-color: rgba(120, 120, 120, 0.5);
   width: 13.54vw;
   cursor: pointer;
 }
+.active {
+  background-color: rgba(220, 0, 0, 0.3);
+}
+.lowComputing {
+  background-color: rgba(120, 200, 120, 0.3);
+}
+.mediumComputing {
+  background-color: rgba(255, 213, 87, 0.3);
+}
+.highComputing {
+  background-color: rgba(220, 0, 0, 0.3);
+}
+
 .outter-hovered {
-  background-color: rgba(73, 167, 255, 0.50);
+  /* background-color: rgba(73, 203, 255, 0.5); */
+  background-color: rgba(138, 138, 138, 0.3);
 }

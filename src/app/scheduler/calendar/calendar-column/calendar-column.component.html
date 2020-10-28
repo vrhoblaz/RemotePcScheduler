@@ -1,12 +1,18 @@
 <div class="outter">
   <div class="col-12">
-    <div class="header">{{ weekDay }}</div>
+    <div class="header">
+      {{ weekDay }}
+    </div>
+    <div>{{ date | date }}</div>
   </div>
   <div class="calendar-content-container">
     <app-calendar-hour
       *ngFor="let hourIndex of hourIndexes"
       [hourIndex]="hourIndex"
     ></app-calendar-hour>
-    <app-calendar-item *ngFor="let item of calendarItems" [calendarItem]="item"></app-calendar-item>
+    <app-calendar-item
+      *ngFor="let item of calendarItems; let i = index"
+      [calendarItem]="item"
+    ></app-calendar-item>
   </div>
 </div>

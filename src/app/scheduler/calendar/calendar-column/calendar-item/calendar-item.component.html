@@ -1,6 +1,6 @@
 <!-- <div class="outter" [ngStyle]="{top: topOffset, height: height}">asd</div> -->
 <div
-  class="outter"
+  class="outter {{ calendarItem.requestType }}"
   [ngClass]="{ 'outter-hovered': highlighted }"
   [ngStyle]="{
     top: calendarItem.topOffset + 'px',

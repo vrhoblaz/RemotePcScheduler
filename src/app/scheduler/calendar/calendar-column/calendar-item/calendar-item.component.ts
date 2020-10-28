@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DataService } from 'src/app/shared/data.service';
-import { CalendarItem, Entry } from 'src/app/shared/entry.model';
+import { CalendarItem } from 'src/app/shared/entry.model';
 
 @Component({
   selector: 'app-calendar-item',
@@ -20,11 +20,11 @@ export class CalendarItemComponent implements OnInit {
     });
   }
 
-  onMouseEnter() {
+  onMouseEnter(): void {
     this.dataService.hoveredCalendarItemId.next(this.calendarItem.id);
   }
 
-  onMouseLeave() {
+  onMouseLeave(): void {
     this.dataService.hoveredCalendarItemId.next('');
   }
 }

@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { DataService } from 'src/app/shared/data.service';
 import { CalendarItem } from 'src/app/shared/entry.model';
 
@@ -7,10 +8,13 @@ import { CalendarItem } from 'src/app/shared/entry.model';
   templateUrl: './calendar-column.component.html',
   styleUrls: ['./calendar-column.component.css'],
 })
-export class CalendarColumnComponent implements OnInit {
+export class CalendarColumnComponent implements OnInit, OnDestroy {
   @Input() weekDay: string;
   @Input() dayIndex: number;
+  date: Date;
 
+  dateChangedSubs: Subscription;
+  mondayDateSubs: Subscription;
   hourIndexes: number[] = [];
   calendarItems: CalendarItem[];
 
@@ -21,8 +25,33 @@ export class CalendarColumnComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.calendarItems = this.dataService.getDayEntries(
-      new Date(2020, 10, 19 + this.dayIndex)
+    this.dateChangedSubs = this.dataService.dataChanged.subscribe(() => {
+      this.calendarItems = this.dataService.getDayEntries(this.date);
+    });
+
+    this.mondayDateSubs = this.dataService.mondayDate.subscribe(
+      (monDate: Date) => {
+        const newDate = new Date(monDate);
+        newDate.setDate(monDate.getDate() + this.dayIndex);
+        this.date = newDate;
+
+        this.calendarItems = this.dataService.getDayEntries(this.date);
+      }
     );
+
+    const currDate = new Date(2020, 9, 26);
+    const weekDay = currDate.getDay() === 0 ? 6 : currDate.getDay() - 1;
+    const mondayDate = new Date(currDate);
+    mondayDate.setDate(currDate.getDate() - weekDay);
+    this.dataService.mondayDate.next(mondayDate);
+  }
+
+  ngOnDestroy(): void {
+    if (this.mondayDateSubs) {
+      this.mondayDateSubs.unsubscribe();
+    }
+    if (this.dateChangedSubs) {
+      this.dateChangedSubs.unsubscribe();
+    }
   }
 }
