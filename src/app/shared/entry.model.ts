@@ -18,7 +18,7 @@ export class Entry {
     public userName: string,
     public requestType: string,
     public description: string,
-    public id?: string,
+    public id: string,
   ) {
     // populate Calander items
     const yearStart = startDateTime.getFullYear();

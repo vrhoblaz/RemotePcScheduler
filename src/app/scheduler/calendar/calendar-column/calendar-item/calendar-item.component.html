@@ -8,6 +8,7 @@
   }"
   (mouseenter)="onMouseEnter()"
   (mouseleave)="onMouseLeave()"
+  [routerLink]="['/edit', calendarItem.id]"
 >
 {{calendarItem.userName}}
 </div>

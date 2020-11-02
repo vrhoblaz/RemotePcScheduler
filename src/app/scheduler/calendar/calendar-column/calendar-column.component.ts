@@ -39,9 +39,10 @@ export class CalendarColumnComponent implements OnInit, OnDestroy {
       }
     );
 
-    const currDate = new Date(2020, 9, 26);
+    const currDate = new Date();
     const weekDay = currDate.getDay() === 0 ? 6 : currDate.getDay() - 1;
     const mondayDate = new Date(currDate);
+
     mondayDate.setDate(currDate.getDate() - weekDay);
     this.dataService.mondayDate.next(mondayDate);
   }

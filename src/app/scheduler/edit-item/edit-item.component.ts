@@ -10,7 +10,7 @@ import { DataService } from 'src/app/shared/data.service';
   styleUrls: ['./edit-item.component.css'],
 })
 export class EditItemComponent implements OnInit {
-  id: number;
+  id: string;
   editMode = false;
   entryForm: FormGroup;
   displayError = false;
@@ -79,8 +79,20 @@ export class EditItemComponent implements OnInit {
       new Date(formValues.endDateTime),
       formValues.userName,
       formValues.requestType,
-      formValues.description
+      formValues.description,
+      this.editMode ? this.id : this.generateId()
     );
     this.dataService.addEntry(entry);
+  }
+
+  private generateId(): string {
+    const randFactor = 1000;
+
+    const time = new Date().getTime();
+    const randomNum = Math.floor(Math.random() * randFactor);
+
+    let id = (time * randFactor + randomNum).toString(16);
+
+    return id;
   }
 }
