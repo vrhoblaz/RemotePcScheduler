@@ -22,6 +22,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
   startDate: Date;
   endDate: Date;
 
+  isLoading = false;
+  loadingSubscription: Subscription;
+
   constructor(
     private cdRef: ChangeDetectorRef,
     private dataService: DataService
@@ -35,6 +38,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
         this.endDate.setDate(this.endDate.getDate() + 6);
 
         this.cdRef.detectChanges();
+      }
+    );
+
+    this.loadingSubscription = this.dataService.isLoading.subscribe(
+      (isloading: boolean) => {
+        this.isLoading = isloading;
       }
     );
   }
@@ -54,6 +63,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.mondayDateSubs) {
       this.mondayDateSubs.unsubscribe();
+    }
+
+    if (this.loadingSubscription) {
+      this.loadingSubscription.unsubscribe();
     }
   }
 }

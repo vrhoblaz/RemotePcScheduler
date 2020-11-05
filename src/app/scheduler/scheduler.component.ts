@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DataService } from '../shared/data.service';
 
 @Component({
   selector: 'app-scheduler',
@@ -6,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./scheduler.component.css'],
 })
 export class SchedulerComponent implements OnInit {
-  constructor() {}
+  constructor(private dataService: DataService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.dataService.fetchEntries();
+  }
 }

@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
-      <h4>Edit entry</h4>
+      <h4>{{ editMode ? "Edit entry" : "Add new entry" }}</h4>
 
       <form [formGroup]="entryForm" (ngSubmit)="onSubmit()">
         <div class="form-row">
@@ -67,15 +67,31 @@
             formControlName="description"
           ></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">
-          {{ editMode ? "Update" : "Add" }}
-        </button>
-        <button type="button" class="btn btn-outline-danger" *ngIf="editMode">
-          Delete
-        </button>
-        <button type="button" class="btn btn-outline-secondary">Cancel</button>
-        <div *ngIf="displayError">
-          <small style="color: darkred">Please enter all required data</small>
+        <div class="loading" *ngIf="isLoading">
+          <div class="loader">Loading...</div>
+        </div>
+        <div class="btns" *ngIf="!isLoading">
+          <button type="submit" class="btn btn-primary">
+            {{ editMode ? "Update" : "Add" }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-danger"
+            *ngIf="editMode"
+            (click)="onDelete()"
+          >
+            Delete
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="onCancel()"
+          >
+            Cancel
+          </button>
+          <div *ngIf="displayError">
+            <small style="color: darkred">Please enter all required data</small>
+          </div>
         </div>
       </form>
     </div>

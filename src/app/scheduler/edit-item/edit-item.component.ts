@@ -1,23 +1,48 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+
 import { Entry } from 'src/app/shared/entry.model';
 import { DataService } from 'src/app/shared/data.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-edit-item',
   templateUrl: './edit-item.component.html',
   styleUrls: ['./edit-item.component.css'],
 })
-export class EditItemComponent implements OnInit {
+export class EditItemComponent implements OnInit, OnDestroy {
   id: string;
   editMode = false;
   entryForm: FormGroup;
   displayError = false;
 
-  constructor(private dataService: DataService) {}
+  isLoading = false;
+  loadingSubscription: Subscription;
+
+  constructor(
+    private dataService: DataService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
+    this.route.params.subscribe((params: Params) => {
+      this.id = params.id;
+      this.editMode = params.id != null;
+
+      this.initForm();
+    });
+
+    this.loadingSubscription = this.dataService.isLoading.subscribe(
+      (isloading: boolean) => {
+        this.isLoading = isloading;
+      }
+    );
+  }
+
+  initForm(): void {
     let userName = '';
     let startDate = new Date();
     let endDate = new Date(
@@ -31,11 +56,14 @@ export class EditItemComponent implements OnInit {
     let description = '';
 
     if (this.editMode) {
-      userName = '';
-      startDate = new Date();
-      endDate = new Date();
-      requestType = '';
-      description = '';
+      const currItem = this.dataService.getEntry(this.id);
+      if (currItem) {
+        userName = currItem.userName;
+        startDate = currItem.startDateTime;
+        endDate = currItem.endDateTime;
+        requestType = currItem.requestType;
+        description = currItem.description;
+      }
     }
 
     // date pipe
@@ -66,6 +94,8 @@ export class EditItemComponent implements OnInit {
 
     this.displayError = false;
 
+    this.dataService.isLoading.next(true);
+
     const formValues: {
       startDateTime: Date;
       endDateTime: Date;
@@ -82,7 +112,27 @@ export class EditItemComponent implements OnInit {
       formValues.description,
       this.editMode ? this.id : this.generateId()
     );
-    this.dataService.addEntry(entry);
+    this.dataService.updateEntry(entry).subscribe((res: Entry) => {
+      this.dataService.fetchEntries();
+      this.onCancel();
+    });
+  }
+
+  onCancel(): void {
+    this.router.navigate(['/calendar']);
+  }
+
+  onDelete(): void {
+    if (!this.editMode) {
+      return;
+    }
+
+    this.dataService.isLoading.next(true);
+
+    this.dataService.deleteEntry(this.id).subscribe((res: Entry) => {
+      this.dataService.fetchEntries();
+      this.onCancel();
+    });
   }
 
   private generateId(): string {
@@ -91,8 +141,14 @@ export class EditItemComponent implements OnInit {
     const time = new Date().getTime();
     const randomNum = Math.floor(Math.random() * randFactor);
 
-    let id = (time * randFactor + randomNum).toString(16);
+    const id = (time * randFactor + randomNum).toString(16);
 
     return id;
+  }
+
+  ngOnDestroy(): void {
+    if (this.loadingSubscription) {
+      this.loadingSubscription.unsubscribe();
+    }
   }
 }

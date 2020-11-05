@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,6 +26,7 @@ import { CalendarHourComponent } from './scheduler/calendar/calendar-column/cale
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     ReactiveFormsModule
   ],

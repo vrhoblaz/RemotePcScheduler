@@ -1,24 +1,29 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
-      <h4>Calendar view</h4>
-      <div class="m-2">
-        <button class="btn btn-outline-secondary" (click)="onPreviousWeek()">
-          &lt;
-        </button>
-        <span class="date-range"
-          >{{ startDate | date }} - {{ endDate | date }}</span
-        >
-        <button class="btn btn-outline-secondary" (click)="onNextWeek()">
-          &gt;
-        </button>
+  <div *ngIf="isLoading">
+    <div class="loader">Loading...</div>
+  </div>
+  <div *ngIf="!isLoading">
+    <div class="row">
+      <div class="col-12">
+        <h4>Calendar view</h4>
+        <div class="m-2">
+          <button class="btn btn-outline-secondary" (click)="onPreviousWeek()">
+            &lt;
+          </button>
+          <span class="date-range"
+            >{{ startDate | date }} - {{ endDate | date }}</span
+          >
+          <button class="btn btn-outline-secondary" (click)="onNextWeek()">
+            &gt;
+          </button>
+        </div>
+        <app-calendar-column
+          class="float-left"
+          *ngFor="let day of weekDays; let i = index"
+          [weekDay]="day"
+          [dayIndex]="i"
+        ></app-calendar-column>
       </div>
-      <app-calendar-column
-        class="float-left"
-        *ngFor="let day of weekDays; let i = index"
-        [weekDay]="day"
-        [dayIndex]="i"
-      ></app-calendar-column>
     </div>
   </div>
 </div>

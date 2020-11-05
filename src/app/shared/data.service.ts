@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 import { Entry, CalendarItem } from './entry.model';
 
@@ -10,51 +11,11 @@ export class DataService {
   hoveredCalendarItemId = new Subject<string>();
   mondayDate = new Subject<Date>();
   dataChanged = new Subject();
+  isLoading = new BehaviorSubject<boolean>(false);
 
-  data: Entry[] = [
-    new Entry(
-      new Date(2020, 9, 27, 15, 30),
-      new Date(2020, 9, 27, 16, 30),
-      'Blaž',
-      'active',
-      '',
-      '1'
-    ),
-    new Entry(
-      new Date(2020, 9, 27, 16, 30),
-      new Date(2020, 9, 28, 15, 0),
-      'Blaž',
-      'lowComputing',
-      '',
-      '2'
-    ),
-    new Entry(
-      new Date(2020, 9, 28, 16, 30),
-      new Date(2020, 9, 30, 15, 0),
-      'You',
-      'mediumComputing',
-      '',
-      '3'
-    ),
-    new Entry(
-      new Date(2020, 9, 31, 11, 30),
-      new Date(2020, 9, 32, 15, 0),
-      'You',
-      'highComputing',
-      '',
-      '4'
-    ),
-    new Entry(
-      new Date(2020, 10, 2, 11, 30),
-      new Date(2020, 10, 5, 15, 0),
-      'You',
-      'highComputing',
-      '',
-      '4'
-    ),
-  ];
+  data: Entry[] = [];
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   getDayEntries(date: Date): CalendarItem[] {
     const allItems: CalendarItem[] = [];
@@ -72,8 +33,54 @@ export class DataService {
     return matchingItems;
   }
 
-  addEntry(newEntry: Entry): void {
-    this.data.push(newEntry);
-    this.dataChanged.next();
+  getEntry(id: string): Entry {
+    const filteredEntries = this.data.filter((x: Entry) => x.id === id);
+    if (filteredEntries.length > 0) {
+      return filteredEntries[0];
+    }
+    return null;
+  }
+
+  fetchEntries(): void {
+    this.isLoading.next(true);
+    this.http
+      .get<{ [key: string]: Entry }>(
+        'https://custom-pc-access.firebaseio.com/schedule/pc-1.json'
+      )
+      .subscribe((databaseItems) => {
+        this.data = [];
+        if (databaseItems) {
+          const entries = Object.values(databaseItems);
+          entries.forEach((element) => {
+            const entry = new Entry(
+              new Date(element.startDateTime),
+              new Date(element.endDateTime),
+              element.userName,
+              element.requestType,
+              element.description,
+              element.id
+            );
+            this.data.push(entry);
+          });
+        }
+
+        this.dataChanged.next();
+        this.isLoading.next(false);
+      });
+  }
+
+  updateEntry(newEntry: Entry): Observable<Entry> {
+    const databaseItem = { ...newEntry };
+    delete databaseItem.calendarItems;
+    return this.http.put<Entry>(
+      `https://custom-pc-access.firebaseio.com/schedule/pc-1/${newEntry.id}.json`,
+      databaseItem
+    );
+  }
+
+  deleteEntry(id: string): Observable<null> {
+    return this.http.delete<null>(
+      `https://custom-pc-access.firebaseio.com/schedule/pc-1/${id}.json`
+    );
   }
 }
