@@ -17,6 +17,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
   editMode = false;
   entryForm: FormGroup;
   displayError = false;
+  showForm = false;
 
   isLoading = false;
   loadingSubscription: Subscription;
@@ -33,6 +34,27 @@ export class EditItemComponent implements OnInit, OnDestroy {
       this.editMode = params.id != null;
 
       this.initForm();
+
+      if (this.editMode) {
+        this.dataService.fetchEntry(this.id).subscribe((databaseItem) => {
+          if (databaseItem) {
+            const currItem = new Entry(
+              new Date(databaseItem.startDateTime),
+              new Date(databaseItem.endDateTime),
+              databaseItem.userName,
+              databaseItem.requestType,
+              databaseItem.description,
+              databaseItem.id
+            );
+            this.initForm(currItem);
+            this.showForm = true;
+          } else {
+            this.router.navigate(['/calendar']);
+          }
+        });
+      } else {
+        this.showForm = true;
+      }
     });
 
     this.loadingSubscription = this.dataService.isLoading.subscribe(
@@ -42,7 +64,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
     );
   }
 
-  initForm(): void {
+  initForm(currItem?: Entry): void {
     let userName = '';
     let startDate = new Date();
     let endDate = new Date(
@@ -55,8 +77,9 @@ export class EditItemComponent implements OnInit, OnDestroy {
     let requestType = '';
     let description = '';
 
-    if (this.editMode) {
-      const currItem = this.dataService.getEntry(this.id);
+    if (currItem) {
+      // const currItem = this.dataService.getEntry(this.id);
+
       if (currItem) {
         userName = currItem.userName;
         startDate = currItem.startDateTime;
@@ -72,11 +95,14 @@ export class EditItemComponent implements OnInit, OnDestroy {
 
     this.entryForm = new FormGroup({
       startDateTime: new FormControl(
-        dp.transform(startDate, dPipe),
+        // dp.transform(startDate, dPipe),
+        // new Date(),
+        startDate,
         Validators.required
       ),
       endDateTime: new FormControl(
-        dp.transform(endDate, dPipe),
+        // dp.transform(endDate, dPipe),
+        endDate,
         Validators.required
       ),
       userName: new FormControl(userName, Validators.required),

@@ -41,6 +41,12 @@ export class DataService {
     return null;
   }
 
+  fetchEntry(id: string): Observable<Entry> {
+    return this.http.get<Entry>(
+      `https://custom-pc-access.firebaseio.com/schedule/pc-1/${id}.json`
+    );
+  }
+
   fetchEntries(): void {
     this.isLoading.next(true);
     this.http

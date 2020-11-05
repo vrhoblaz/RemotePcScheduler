@@ -1,4 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
+/* Date picker */
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+
+/* Loading spinner */
 .loader {
   color: #1D2A9E;
   font-size: 90px;
@@ -97,3 +100,6 @@
     transform: rotate(360deg);
   }
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
