@@ -23,11 +23,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
 export const MY_NATIVE_FORMATS = {
   fullPickerInput: {
+    hour: 'numeric',
+    minute: 'numeric',
     year: 'numeric',
     month: 'numeric',
     day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
     hour12: false,
   },
   datePickerInput: { year: 'numeric', month: 'numeric', day: 'numeric' },

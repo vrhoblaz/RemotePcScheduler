@@ -21,6 +21,12 @@
               placeholder="Your name"
               formControlName="userName"
             />
+            <small
+              class="input-error"
+              *ngIf="getFormControlErrors('userName').length > 0"
+            >
+              {{ getFormControlErrors("userName") }}
+            </small>
           </div>
         </div>
         <div class="form-row">
@@ -33,8 +39,16 @@
               [owlDateTime]="dt1"
               [owlDateTimeTrigger]="dt1"
               placeholder="Start date & time"
+              [min]="minStart"
+              (dateTimeChange)="onStartDateTimeChange()"
             />
             <owl-date-time #dt1></owl-date-time>
+            <small
+              class="input-error"
+              *ngIf="getFormControlErrors('startDateTime').length > 0"
+            >
+              {{ getFormControlErrors("startDateTime") }}
+            </small>
           </div>
           <div class="form-group col-lg-4">
             <label for="endDate">End date & time</label>
@@ -45,8 +59,15 @@
               [owlDateTime]="dt2"
               [owlDateTimeTrigger]="dt2"
               placeholder="End date & time"
+              [min]="minEnd"
             />
             <owl-date-time #dt2></owl-date-time>
+            <small
+              class="input-error"
+              *ngIf="getFormControlErrors('endDateTime').length > 0"
+            >
+              {{ getFormControlErrors("endDateTime") }}
+            </small>
           </div>
           <div class="form-group col-lg-4">
             <label for="requestType">Type of need</label>
@@ -68,6 +89,12 @@
                 Computing - large/intense calculations
               </option>
             </select>
+            <small
+              class="input-error"
+              *ngIf="getFormControlErrors('requestType').length > 0"
+            >
+              {{ getFormControlErrors("requestType") }}
+            </small>
           </div>
         </div>
         <div class="form-group">

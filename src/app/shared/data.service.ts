@@ -47,32 +47,36 @@ export class DataService {
     );
   }
 
+  private fetchEntriesObservable(): Observable<{ [key: string]: Entry }> {
+    return this.http.get<{ [key: string]: Entry }>(
+      'https://custom-pc-access.firebaseio.com/schedule/pc-1.json'
+    );
+  }
+
   fetchEntries(): void {
     this.isLoading.next(true);
-    this.http
-      .get<{ [key: string]: Entry }>(
-        'https://custom-pc-access.firebaseio.com/schedule/pc-1.json'
-      )
-      .subscribe((databaseItems) => {
-        this.data = [];
-        if (databaseItems) {
-          const entries = Object.values(databaseItems);
-          entries.forEach((element) => {
-            const entry = new Entry(
-              new Date(element.startDateTime),
-              new Date(element.endDateTime),
-              element.userName,
-              element.requestType,
-              element.description,
-              element.id
-            );
-            this.data.push(entry);
-          });
-        }
 
-        this.dataChanged.next();
-        this.isLoading.next(false);
-      });
+    this.fetchEntriesObservable().subscribe((databaseItems) => {
+      this.data = [];
+      if (databaseItems) {
+        const entries = Object.values(databaseItems);
+        entries.forEach((element) => {
+          const entry = new Entry(
+            new Date(element.startDateTime),
+            new Date(element.endDateTime),
+            element.userName,
+            element.requestType,
+            element.description,
+            element.id
+          );
+          this.data.push(entry);
+        });
+      }
+
+      this.dataChanged.next();
+
+      this.isLoading.next(false);
+    });
   }
 
   updateEntry(newEntry: Entry): Observable<Entry> {

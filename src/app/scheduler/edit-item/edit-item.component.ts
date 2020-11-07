@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { Entry } from 'src/app/shared/entry.model';
@@ -18,6 +17,8 @@ export class EditItemComponent implements OnInit, OnDestroy {
   entryForm: FormGroup;
   displayError = false;
   showForm = false;
+  minStart: Date;
+  minEnd: Date;
 
   isLoading = false;
   loadingSubscription: Subscription;
@@ -29,6 +30,8 @@ export class EditItemComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.minStart = new Date();
+    this.minEnd = new Date(this.minStart.getTime() + 15 * 60 * 1000);
     this.route.params.subscribe((params: Params) => {
       this.id = params.id;
       this.editMode = params.id != null;
@@ -78,37 +81,88 @@ export class EditItemComponent implements OnInit, OnDestroy {
     let description = '';
 
     if (currItem) {
-      // const currItem = this.dataService.getEntry(this.id);
-
-      if (currItem) {
-        userName = currItem.userName;
-        startDate = currItem.startDateTime;
-        endDate = currItem.endDateTime;
-        requestType = currItem.requestType;
-        description = currItem.description;
-      }
+      userName = currItem.userName;
+      startDate = currItem.startDateTime;
+      endDate = currItem.endDateTime;
+      requestType = currItem.requestType;
+      description = currItem.description;
     }
 
-    // date pipe
-    const dp = new DatePipe(navigator.language);
-    const dPipe = 'y-MM-ddTHH:mm'; // yyyy-mm-ddThh:mm
-
     this.entryForm = new FormGroup({
-      startDateTime: new FormControl(
-        // dp.transform(startDate, dPipe),
-        // new Date(),
-        startDate,
-        Validators.required
-      ),
-      endDateTime: new FormControl(
-        // dp.transform(endDate, dPipe),
-        endDate,
-        Validators.required
-      ),
-      userName: new FormControl(userName, Validators.required),
+      startDateTime: new FormControl(startDate, Validators.required),
+      endDateTime: new FormControl(endDate, Validators.required),
+      userName: new FormControl(userName, [
+        Validators.required,
+        Validators.minLength(4),
+      ]),
       requestType: new FormControl(requestType, Validators.required),
       description: new FormControl(description),
     });
+  }
+
+  getFormControl(fromName: string): FormControl {
+    return <FormControl>this.entryForm.get(fromName);
+  }
+
+  getFormControlErrors(fromName: string): string {
+    const control = <FormControl>this.entryForm.get(fromName);
+    if (control === null || control.valid || control.untouched) {
+      return '';
+    }
+
+    const errors = Object.keys(control.errors);
+    let errMsg = '';
+    const dateOptions = {
+      hour: 'numeric',
+      minute: 'numeric',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour12: false,
+    };
+    errors.forEach((element) => {
+      switch (element) {
+        case 'required':
+          errMsg = 'This field is required!';
+          break;
+        case 'minlength':
+          if (fromName === 'userName') {
+            errMsg = 'Name must be at least 3 characters long!';
+          } else {
+            errMsg = 'To short!';
+          }
+          break;
+        case 'owlDateTimeMin':
+          if (fromName === 'startDateTime') {
+            errMsg =
+              'Start datetime must be after ' +
+              new Intl.DateTimeFormat('si-SL', dateOptions).format(
+                this.minStart
+              ) +
+              '!';
+          } else if (fromName === 'endDateTime') {
+            errMsg =
+              'Start datetime must be after ' +
+              new Intl.DateTimeFormat('sl-SI', dateOptions).format(
+                this.minEnd
+              ) +
+              '!';
+          } else {
+            errMsg = 'Entered date not valid!';
+          }
+          break;
+        default:
+          errMsg = element;
+          break;
+      }
+    });
+    return errMsg;
+  }
+
+  onStartDateTimeChange() {
+    const currStartDate = this.entryForm.get('startDateTime').value;
+    this.minEnd = new Date(currStartDate.getTime() + 15 * 60 * 1000);
+    this.getFormControl('endDateTime').markAsTouched();
   }
 
   onSubmit(): void {
