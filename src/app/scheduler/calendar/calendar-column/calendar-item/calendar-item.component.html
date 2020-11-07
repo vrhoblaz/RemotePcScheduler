@@ -1,4 +1,3 @@
-<!-- <div class="outter" [ngStyle]="{top: topOffset, height: height}">asd</div> -->
 <div
   class="outter {{ calendarItem.requestType }}"
   [ngClass]="{ 'outter-hovered': highlighted }"
@@ -9,6 +8,8 @@
   (mouseenter)="onMouseEnter()"
   (mouseleave)="onMouseLeave()"
   [routerLink]="['/edit', calendarItem.id]"
+  [matTooltip]="itemText"
+  [matTooltipClass]="'tool-tip-element'"
 >
-{{calendarItem.userName}}
+  <!-- {{ calendarItem.userName }} -->
 </div>

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DataService } from 'src/app/shared/data.service';
-import { CalendarItem } from 'src/app/shared/entry.model';
+import { CalendarItem, Entry } from 'src/app/shared/entry.model';
 
 @Component({
   selector: 'app-calendar-item',
@@ -10,6 +10,7 @@ import { CalendarItem } from 'src/app/shared/entry.model';
 export class CalendarItemComponent implements OnInit {
   @Input() calendarItem: CalendarItem;
 
+  itemText: string;
   highlighted = false;
 
   constructor(private dataService: DataService) {}
@@ -18,6 +19,19 @@ export class CalendarItemComponent implements OnInit {
     this.dataService.hoveredCalendarItemId.subscribe((hoveredId: string) => {
       this.highlighted = hoveredId === this.calendarItem.id;
     });
+
+    const entry = this.dataService.getEntry(this.calendarItem.id);
+
+
+    this.itemText =
+      entry.userName +
+      '\n' +
+      entry.description +
+      '\n' +
+      this.getDateTimeString(entry.startDateTime) +
+      ' - ' +
+      this.getDateTimeString(entry.endDateTime) +
+      '\n';
   }
 
   onMouseEnter(): void {
@@ -26,5 +40,11 @@ export class CalendarItemComponent implements OnInit {
 
   onMouseLeave(): void {
     this.dataService.hoveredCalendarItemId.next('');
+  }
+
+  private getDateTimeString(date: Date): string {
+    const timestr = date.toTimeString().slice(0, 5);
+    const dateStr = date.toDateString().slice(4, 11);
+    return timestr + ' ' + dateStr;
   }
 }

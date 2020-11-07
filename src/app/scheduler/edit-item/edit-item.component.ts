@@ -93,7 +93,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
       endDateTime: new FormControl(endDate, Validators.required),
       userName: new FormControl(userName, [
         Validators.required,
-        Validators.minLength(4),
+        Validators.minLength(3),
       ]),
       requestType: new FormControl(requestType, Validators.required),
       description: new FormControl(description),

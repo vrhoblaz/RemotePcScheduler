@@ -8,6 +8,7 @@ import {
   OwlNativeDateTimeModule,
   OWL_DATE_TIME_FORMATS,
 } from 'ng-pick-datetime';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -19,8 +20,6 @@ import { CalendarItemComponent } from './scheduler/calendar/calendar-column/cale
 import { CalendarHourComponent } from './scheduler/calendar/calendar-column/calendar-hour/calendar-hour.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-// learn more about this from
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
 export const MY_NATIVE_FORMATS = {
   fullPickerInput: {
     hour: 'numeric',
@@ -56,6 +55,7 @@ export const MY_NATIVE_FORMATS = {
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     BrowserAnimationsModule,
+    MatTooltipModule,
   ],
   providers: [{ provide: OWL_DATE_TIME_FORMATS, useValue: MY_NATIVE_FORMATS }],
   bootstrap: [AppComponent],
