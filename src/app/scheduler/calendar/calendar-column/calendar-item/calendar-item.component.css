@@ -1,6 +1,6 @@
 .outter {
   position: absolute;
-  width: 13.54vw;
+  width: 100%;
   cursor: pointer;
 }
 .active {

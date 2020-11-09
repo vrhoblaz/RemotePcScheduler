@@ -19,6 +19,7 @@ import { CalendarColumnComponent } from './scheduler/calendar/calendar-column/ca
 import { CalendarItemComponent } from './scheduler/calendar/calendar-column/calendar-item/calendar-item.component';
 import { CalendarHourComponent } from './scheduler/calendar/calendar-column/calendar-hour/calendar-hour.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FooterComponent } from './footer/footer.component';
 
 export const MY_NATIVE_FORMATS = {
   fullPickerInput: {
@@ -46,6 +47,7 @@ export const MY_NATIVE_FORMATS = {
     CalendarColumnComponent,
     CalendarItemComponent,
     CalendarHourComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,

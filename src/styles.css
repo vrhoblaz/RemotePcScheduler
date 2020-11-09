@@ -1,6 +1,10 @@
 /* Date picker */
 @import "~ng-pick-datetime/assets/style/picker.min.css";
 
+body {
+  background-color: #3240910c;
+}
+
 /* Loading spinner */
 .loader {
   color: #1D2A9E;
