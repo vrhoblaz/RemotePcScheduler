@@ -4,7 +4,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { Entry } from 'src/app/shared/entry.model';
 import { DataService } from 'src/app/shared/data.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-edit-item',
@@ -16,6 +16,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
   editMode = false;
   entryForm: FormGroup;
   displayError = false;
+  generalError: string;
   showForm = false;
   minStart: Date;
   minEnd: Date;
@@ -168,6 +169,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     this.entryForm.markAllAsTouched();
     if (!this.entryForm.valid) {
+      this.generalError = 'Please enter all required data';
       this.displayError = true;
       return null;
     }
@@ -192,9 +194,17 @@ export class EditItemComponent implements OnInit, OnDestroy {
       formValues.description,
       this.editMode ? this.id : this.generateId()
     );
-    this.dataService.updateEntry(entry).subscribe((res: Entry) => {
-      this.dataService.fetchEntries();
-      this.onCancel();
+    this.dataService.updateEntry2(entry).then((promiseRes) => {
+      if (promiseRes.status === 'success') {
+        const obs = promiseRes.val as Observable<Entry>;
+        obs.subscribe((res: Entry) => {
+          this.dataService.fetchEntries();
+          this.onCancel();
+        });
+      } else if (promiseRes.status === 'fail') {
+        this.generalError = promiseRes.val as string;
+        this.displayError = true;
+      }
     });
   }
 

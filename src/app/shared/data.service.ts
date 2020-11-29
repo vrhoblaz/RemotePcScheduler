@@ -47,12 +47,6 @@ export class DataService {
     );
   }
 
-  private fetchEntriesObservable(): Observable<{ [key: string]: Entry }> {
-    return this.http.get<{ [key: string]: Entry }>(
-      'https://custom-pc-access.firebaseio.com/schedule/pc-1.json'
-    );
-  }
-
   fetchEntries(): void {
     this.isLoading.next(true);
 
@@ -88,9 +82,76 @@ export class DataService {
     );
   }
 
+  async updateEntry2(
+    newEntry: Entry
+  ): Promise<
+    { status: string; val: Observable<Entry> } | { status: string; val: string }
+  > {
+    const databaseItem = { ...newEntry };
+    delete databaseItem.calendarItems;
+
+    await this.fetchEntries();
+
+    const newStartDate = newEntry.startDateTime;
+    const newEndDate = newEntry.endDateTime;
+
+    let overlappingEntry: Entry = null;
+    this.data.forEach((element) => {
+      const oldStartDate = element.startDateTime;
+      const oldEndDate = element.endDateTime;
+
+      if (
+        (newStartDate < oldEndDate && newEndDate > oldEndDate) ||
+        (oldStartDate < newStartDate && oldEndDate > newStartDate) ||
+        (oldStartDate < newEndDate && oldEndDate > newEndDate)
+      ) {
+        overlappingEntry = element;
+        return;
+      }
+    });
+
+    if (overlappingEntry) {
+      const dateOptions = {
+        hour: 'numeric',
+        minute: 'numeric',
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour12: false,
+      };
+      return {
+        status: 'fail',
+        val:
+          'Termin ' +
+          new Intl.DateTimeFormat('si-SL', dateOptions).format(
+            overlappingEntry.startDateTime
+          ) +
+          ' to ' +
+          new Intl.DateTimeFormat('si-SL', dateOptions).format(
+            overlappingEntry.endDateTime
+          ) +
+          ' is already taken!',
+      };
+    }
+
+    return {
+      status: 'success',
+      val: this.http.put<Entry>(
+        `https://custom-pc-access.firebaseio.com/schedule/pc-1/${newEntry.id}.json`,
+        databaseItem
+      ),
+    };
+  }
+
   deleteEntry(id: string): Observable<null> {
     return this.http.delete<null>(
       `https://custom-pc-access.firebaseio.com/schedule/pc-1/${id}.json`
+    );
+  }
+
+  private fetchEntriesObservable(): Observable<{ [key: string]: Entry }> {
+    return this.http.get<{ [key: string]: Entry }>(
+      'https://custom-pc-access.firebaseio.com/schedule/pc-1.json'
     );
   }
 }
